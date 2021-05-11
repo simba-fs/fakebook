@@ -1,6 +1,6 @@
 import useSWR from 'swr';
 
-import { getAllPosts, getPostById } from '../../lib/post.js';
+import getPosts from '../../lib/post.js';
 import { getUserInfo } from '../../lib/user.js';
 import styles from '../../styles/Home.module.css';
 
@@ -15,7 +15,7 @@ function Post({ post }){
 }
 
 export default function PostPage({ id }){
-	const { data: post, postError } = useSWR('getPost', () => getPostById(id))
+	const { data: post, postError } = useSWR('getPost', () => getPosts({ id }))
 
 	if(postError) return <div>Error: {postError}</div>;
 	if(!post) return <h1>Loading ......</h1>;
@@ -26,8 +26,11 @@ export default function PostPage({ id }){
 }
 
 export async function getStaticPaths(){
-	const postIDs = await (getAllPosts().then(res => res.map(i => i.id)));
-	// console.log({ postIDs });
+	console.log('getStaticPaths');
+	const posts = await getPosts();
+	console.log({ posts });
+	const postIDs = await (posts.then(res => res.map(i => i.id)));
+	console.log({ postIDs });
 	const paths = postIDs.map(i => ({ params: { id: i.toString() } }) );
 	return {
 		paths,

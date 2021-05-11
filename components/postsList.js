@@ -9,7 +9,7 @@ export default function PostsList({ posts }){
 			{ posts.map(i =>
 			<Card key={i.id} linkTo={`/post/${i.id}`}>
 				<h2>{i.title}</h2>
-				<p>Author: unknown</p>
+				<p>Author: {i.author.username}</p>
 			</Card>
 			) }
 		</div>
