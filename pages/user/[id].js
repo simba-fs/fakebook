@@ -1,27 +1,19 @@
-import Link from 'next/link';
-import styles from'../../styles/Home.module.css';
-import { getAllUser } from '../../lib/user.js';
+import useSWR from 'swr';
+import { getAllUsers } from '../../lib/user.js';
 import { getPostsByUserId } from '../../lib/post.js';
 
-export default function User({ posts }){
-	return (
-		<div className={styles.container}>
-			<div className={styles.grid}>
-				{posts.map(i =>
-				<Link href={'/post/' + i.id}>
-					<div key={i.id} className={styles.card}>
-						<h2>{i.title}</h2>
-						<p>{i.body}</p>
-					</div>
-				</Link>
-				)}
-			</div>
-		</div>
-	);
-};
+import PostsList from '../../components/postsList.js';
+
+export default function User({ id }){
+	const { data, error } = useSWR('getAllUsers', () => getPostsByUserId(id));
+	
+	if(error) return <div>Error: {error}</div>;
+	if(!data) return <h1>Loading ......</h1>;
+	return <PostsList posts={data} />;
+}
 
 export async function getStaticPaths(){
-	const users = await getAllUser();
+	const users = await getAllUsers();
 	const paths = users.map(i => ({ params: { id: i.id.toString() } }) );
 
 	return {
@@ -31,10 +23,7 @@ export async function getStaticPaths(){
 };
 
 export async function getStaticProps({ params }){
-	const posts = await getPostsByUserId(params.id);
-	console.log({ posts });
-
 	return {
-		props: { posts }
+		props: { id: params.id }
 	};
 };

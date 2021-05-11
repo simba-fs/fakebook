@@ -1,22 +1,33 @@
-import { getAllPostsID, getPostById } from '../../lib/post.js';
+import useSWR from 'swr';
+
+import { getAllPosts, getPostById } from '../../lib/post.js';
 import { getUserInfo } from '../../lib/user.js';
 import styles from '../../styles/Home.module.css';
 
-export default function Post({ post, author }){
+function Post({ post }){
 	return (
-		<div className={styles.container}>
-			<div className={styles.main}>
-				<h1 className={styles.title}>{ post.title }</h1>
-				<h4>{ author.name }</h4>
-				<p>{ post.body }</p>
-			</div>
+		<div>
+			<h1>{post.title}</h1>
+			<h4>{`${post.author.name} <${post.author.username}>`}</h4>
+			<p>{post.body}</p>
 		</div>
 	);
 }
 
+export default function PostPage({ id }){
+	const { data: post, postError } = useSWR('getPost', () => getPostById(id))
+
+	if(postError) return <div>Error: {postError}</div>;
+	if(!post) return <h1>Loading ......</h1>;
+
+	return (
+		<Post post={post} />
+	);
+}
+
 export async function getStaticPaths(){
-	const postIDs = await getAllPostsID();
-	console.log({ postIDs });
+	const postIDs = await (getAllPosts().then(res => res.map(i => i.id)));
+	// console.log({ postIDs });
 	const paths = postIDs.map(i => ({ params: { id: i.toString() } }) );
 	return {
 		paths,
@@ -25,9 +36,7 @@ export async function getStaticPaths(){
 }
 
 export async function getStaticProps({ params }){
-	const post = await getPostById(params.id);
-	const author = await getUserInfo(post.userID);
 	return {
-		props: { post, author }
+		props: { id: params.id }
 	};
 }

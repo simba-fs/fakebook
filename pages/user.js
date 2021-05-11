@@ -1,30 +1,16 @@
-import Link from 'next/link';
-import { getAllUser } from '../lib/user';
+import { getAllUsers } from '../lib/user';
+import useSWR from 'swr';
+
 import styles from '../styles/Home.module.css';
 
-export default function User({ users }){
-	return (
-		<div className={styles.container}>
-			<main className={styles.grid}>
-				{ users.map((i, index) =>
-				<Link href={'/user/' + i.id}>
-					<div key={index} className={styles.card}>
-						<h2>username: { i.username }</h2>
-						<p>name: { i.name } </p>
-						<p> email: { i.email }</p>
-					</div>
-				</Link>
-				) }
-			</main>
-		</div>
-	);
-};
+import Link from 'next/link';
+import UserList from '../components/usersList.js';
+import Layout from '../components/layout.js';
 
-export async function getStaticProps(){
-	return {
-		props: {
-			users: await getAllUser()
-		}
-	};
+export default function UserPage(){
+	const { data, error } = useSWR('getAllUser', getAllUsers);
+	if(error) return <h1>Error: {error}</h1>;
+	if(!data) return <h1>Loading...</h1>;
+	
+	return <UserList users={data} />;
 };
-
