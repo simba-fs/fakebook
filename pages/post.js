@@ -11,5 +11,10 @@ export default function User(){
 	if(error) return <ErrorMsg>{ error }</ErrorMsg>;
 	if(!data) return <Loading />;
 
-	return <PostsList posts={data} />;
+	return (
+		<>
+			<h1>Post</h1>
+			<PostsList posts={data} />;
+		</>
+	);
 };

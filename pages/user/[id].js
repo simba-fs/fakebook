@@ -8,10 +8,15 @@ import ErrorMsg from '../../components/errorMsg.js';
 
 export default function User({ id }){
 	const { data, error } = useSWR('getAllUsers', () => getPosts({ userId: id }));
-	
+
 	if(error) return <ErrorMsg>{ error }</ErrorMsg>;
 	if(!data) return <Loading />;
-	return <PostsList posts={data} />;
+	return (
+		<>
+			<h1>{`${data[0].author.name} <${data[0].author.username}>`}</h1>
+			<PostsList posts={data} />
+		</>
+	);
 }
 
 export async function getStaticPaths(){

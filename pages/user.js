@@ -10,5 +10,11 @@ export default function UserPage(){
 	if(error) return <ErrorMsg>{ error }</ErrorMsg>;
 	if(!data) return <Loading />;
 
-	return <UserList users={data} />;
+	return (
+		<>
+			<h1>User</h1>
+			<UserList users={data} />;
+		</>
+	)
+
 };

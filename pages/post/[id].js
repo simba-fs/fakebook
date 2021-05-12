@@ -21,7 +21,12 @@ export default function PostPage({ id }){
 
 	if(postError) return <ErrorMs>{postError}</ErrorMs>;
 	if(!post) return <Loading />;
-	return <Post post={post} />;
+	return (
+		<>
+			<h1>Post</h1>
+			<Post post={post} />
+		</>
+	);
 }
 
 export async function getStaticPaths(){
