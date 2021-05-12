@@ -3,7 +3,6 @@ import styles from '../styles/Home.module.css';
 import Link from 'next/link';
 
 export default function Card({ children, linkTo }){
-	console.log({linkTo});
 	if(linkTo) return (
 		<Link href={linkTo} as={linkTo} passHref={true}>
 			<a className={styles.card}>

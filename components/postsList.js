@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Card from './card.js';
 
 export default function PostsList({ posts }){
+	console.log('post link', { posts });
 	return (
 		<div className={styles.grid}>
 			{ posts.map(i =>

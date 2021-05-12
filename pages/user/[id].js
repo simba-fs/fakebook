@@ -1,14 +1,16 @@
 import useSWR from 'swr';
 import { getAllUsers } from '../../lib/user.js';
-import { getPostsByUserId } from '../../lib/post.js';
+import getPosts from '../../lib/post.js';
 
 import PostsList from '../../components/postsList.js';
+import Loading from '../../components/loading.js'
+import ErrorMsg from '../../components/errorMsg.js';
 
 export default function User({ id }){
-	const { data, error } = useSWR('getAllUsers', () => getPostsByUserId(id));
+	const { data, error } = useSWR('getAllUsers', () => getPosts({ userId: id }));
 	
-	if(error) return <div>Error: {error}</div>;
-	if(!data) return <h1>Loading ......</h1>;
+	if(error) return <ErrorMsg>{ error }</ErrorMsg>;
+	if(!data) return <Loading />;
 	return <PostsList posts={data} />;
 }
 
